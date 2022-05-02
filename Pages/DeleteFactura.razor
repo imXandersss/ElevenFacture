@@ -1,0 +1,74 @@
+﻿@page "/deletefactura/{id:int}"
+@inject NavigationManager NavigationManager
+@inject IFacturaService FacturaService
+@if (factura == null)
+{
+    <p><em>Loading..</em></p>
+}
+else
+{
+    <p style="color:red; text-align:center">¿Estás seguro de que quieres eliminar esta factura?</p>
+
+    <EditForm Model="factura">
+        <table class="table">
+            <tr>
+                <td>Nombre de la persona</td>
+                <td><input class="form-control col-sm-4" type="text" @bind="@factura.nameOwner" /></td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td><input class="form-control col-sm-4" type="text" @bind="@factura.description" /></td>
+            </tr>
+            <tr>
+                <td>Precio</td>
+                <td><input class="form-control col-sm-4" type="text" @bind="@factura.price" /></td>
+            </tr>
+            @if (factura.Id != 0)
+            {
+                <tr>
+                    <td>Fecha de factura</td>
+                    <td><input class="form-control col-sm-4" type="text" @bind="@factura.dateFacture" /></td>
+                </tr>
+            }
+
+            <tr>
+                <td colspan="2" style="text-align:center">
+                    <input class="btn btn-success" type="submit" value="Eliminar" @onclick="deleteFactura" />
+                    <a href="/facturas"><input class="btn btn-danger" type="button" value="Cancelar" /></a>
+                </td>
+            </tr>
+        </table>
+
+
+    </EditForm>
+
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Factura factura = new Factura();
+    private string mensaje = "";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            factura = await FacturaService.getFacturaDetails(id);
+        }catch(Exception e)
+        {
+            throw e;
+        }
+    }
+
+    private async Task deleteFactura()
+    {
+        await FacturaService.deleteFactura(id);
+        NavigationManager.NavigateTo("/facturas");
+    }
+
+
+
+
+}

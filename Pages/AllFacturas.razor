@@ -1,0 +1,68 @@
+﻿@page "/facturas"
+@inject NavigationManager NavigationManager
+@inject IFacturaService FacturaService
+
+@if (facturas == null)
+{
+
+
+    <p><em>Loading..</em></p>
+}
+else
+{
+
+    <div> <a href="/facturadetails"><button class="btn btn-outline-success">Agregar nueva factura</button></a></div>
+    <br />
+    @if (facturas.Count().Equals(0))
+    {
+        <div class="alert alert-danger" role="alert">
+            No hay facturas registradas
+        </div>
+            }
+
+            <table class="table">
+
+
+                <thead>
+                <th>Nombre</th>
+                <th>Fecha de factura</th>
+                <th>Descripción</th>
+                <th></th>
+                <th></th>
+                </thead>
+                <tbody>
+
+                    @foreach (var factura in facturas)
+                    {
+                        <tr>
+                            <td>@factura.nameOwner</td>
+                            <td>@factura.dateFacture</td>
+                            <td>@factura.description</td>
+                            <td><a href="/facturadetails/@factura.Id">Editar</a></td>
+                            <td><a href="/deletefactura/@factura.Id">Eliminar</a></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            }
+
+
+
+
+
+            @code {
+                IEnumerable<Factura> facturas { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+        {
+            facturas = await FacturaService.getAllFacturas();
+        }
+
+
+
+
+
+
+            }
